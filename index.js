@@ -6,7 +6,7 @@ const {
   LocalAuth,
   MessageMedia,
   Buttons,
-  List 
+  List,
 } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 
@@ -24,18 +24,18 @@ const client = new Client({
     // session:sessionData
     clientId: "client-one",
   }),
-//   puppeteer: {
-//     headless: false,
-//     args: ['--no-sandbox',
-//         '--disable-setuid-sandbox',
-//         '--disable-extensions',
-//         '--disable-dev-shm-usage',
-//         '--disable-accelerated-2d-canvas',
-//         '--no-first-run',
-//         '--no-zygote',
-//         '--single-process', // <- this one doesn't works in Windows
-//         '--disable-gpu']
-// }
+  //   puppeteer: {
+  //     headless: false,
+  //     args: ['--no-sandbox',
+  //         '--disable-setuid-sandbox',
+  //         '--disable-extensions',
+  //         '--disable-dev-shm-usage',
+  //         '--disable-accelerated-2d-canvas',
+  //         '--no-first-run',
+  //         '--no-zygote',
+  //         '--single-process', // <- this one doesn't works in Windows
+  //         '--disable-gpu']
+  // }
 });
 
 client.initialize();
@@ -74,56 +74,55 @@ client.on("message", async (message) => {
     const media = new MessageMedia(base64Image.mimetype, base64Image.data);
     const chatId = message.from;
     client.sendMessage(chatId, media, { caption: "this is my caption" });
-  } 
-  else if (!message.hasMedia) {
+  } else if (!message.hasMedia) {
     const chatId = message.from;
+    const chat = await message.getChat();
+    const contact = await message.getContact();
 
-    const number_details = await client.getNumberId(message.from.substring(0, message.from.indexOf("@c.us"))); // get mobile number details
-    const productsList = new List(
-      "Amazing deal on these products",
-      "View products",
-      [
-          {
-              title: "Products list",
-              rows: [
-                  { id: "apple", title: "Apple" },
-                  { id: "mango", title: "Mango" },
-                  { id: "banana", title: "Banana" },
-              ],
-          },
-      ],
-      "Please select a product"
-  );
+    if (chat.isGroup) {
+      await chat.sendMessage(`Hello @${contact.id.user}`, {
+        mentions: [contact],
+      });
+    } else {
+      message.reply("Received By 🤖");
+      client.sendMessage(chatId, "processing please wait...");
+    }
 
-
-    message.reply('Received By 🤖');
-    client.sendMessage(chatId, 'processing pleas wait...');
+    //   const number_details = await client.getNumberId(message.from.substring(0, message.from.indexOf("@c.us"))); // get mobile number details
+    //   const productsList = new List(
+    //     "Amazing deal on these products",
+    //     "View products",
+    //     [
+    //         {
+    //             title: "Products list",
+    //             rows: [
+    //                 { id: "apple", title: "Apple" },
+    //                 { id: "mango", title: "Mango" },
+    //                 { id: "banana", title: "Banana" },
+    //             ],
+    //         },
+    //     ],
+    //     "Please select a product"
+    // );
 
     // const sendMessageData = await client.sendMessage(number_details._serialized, productsList); // send message
     // console.log('msg sent now closing ', sendMessageData)
-
-
-  } 
-   if(message.body === 'all') {
+  }
+  if (message.body === "all") {
     // Mention everyone
     const chat = await message.getChat();
     let text = "";
     let mentions = [];
-  
-    for(let participant of chat.participants) {
-        const contact = await client.getContactById(participant.id._serialized);
-        
-        mentions.push(contact);
-        text += `@${participant.id.user} \n`;
+
+    for (let participant of chat.participants) {
+      const contact = await client.getContactById(participant.id._serialized);
+
+      mentions.push(contact);
+      text += `@${participant.id.user} \n`;
     }
-  
+
     await chat.sendMessage(text, { mentions });
   }
-
-
-
-
-
 
   //extract the number from the message and put it in sender variable.
   const sender = message.from.substring(0, message.from.indexOf("@c.us"));
@@ -162,44 +161,36 @@ client.on("message", async (message) => {
       message.body.includes("habeen wngsn")
     ) {
       message.reply("wacan oo wanagsan qaali");
-    }
-    
-    else if (
-        message.body.includes("Seethy") ||
-        message.body.includes("seethy") ||
-        message.body.includes("seetahay") ||
-        message.body.includes("ii wrn") ||
-        message.body.includes("wrn") ||
-        message.body.includes("waran") ||
-        message.body.includes("Mala fayaa") ||
-        message.body.includes("mala fayaa") ||
-        message.body.includes("mala faayaa") 
-      ) {
-        message.reply("Alxamdulillah, ii wrn?");
-      }
-
-
-      else if (
-        message.body.includes("Baaba") ||
-        message.body.includes("baaba") ||
-        message.body.includes("kariima") ||
-        message.body.includes("baabaa") 
-      ) {
-        message.reply("Baaba, Kariima");
-      }
-      else if (
-        message.body.includes("Shukran") ||
-        message.body.includes("shukan") 
-      ) {
-        message.reply("Baaba, Kariima");
-      }
-    else {
+    } else if (
+      message.body.includes("Seethy") ||
+      message.body.includes("seethy") ||
+      message.body.includes("seetahay") ||
+      message.body.includes("ii wrn") ||
+      message.body.includes("wrn") ||
+      message.body.includes("waran") ||
+      message.body.includes("Mala fayaa") ||
+      message.body.includes("mala fayaa") ||
+      message.body.includes("mala faayaa")
+    ) {
+      message.reply("Alxamdulillah, ii wrn?");
+    } else if (
+      message.body.includes("Baaba") ||
+      message.body.includes("baaba") ||
+      message.body.includes("kariima") ||
+      message.body.includes("baabaa")
+    ) {
+      message.reply("Baaba, Kariima");
+    } else if (
+      message.body.includes("Shukran") ||
+      message.body.includes("shukan")
+    ) {
+      message.reply("Baaba, Kariima");
+    } else {
       message.reply("Ma fahmin");
     }
   }
 
   if (message.body === "Hi") {
-    
     message.reply("Hi!");
   } else if (message.body == "Asc") {
     message.reply("Wcs.");
