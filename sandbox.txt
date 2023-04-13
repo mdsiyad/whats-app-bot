@@ -1,0 +1,27 @@
+
+//   const mentions = await message.getMentions();
+  // const chat = await message.getChat();
+    // const contact = await message.getContact();
+    // console.log(contact)
+    // if(chat.isGroup){
+      
+      // console.log(chat.groupMetadata.owner)
+      // console.log(chat.groupMetadata.subject)
+      // console.log(chat.groupMetadata.participants)
+    // } 
+   
+  //   await chat.sendMessage(`Hello @${contact.id.user}`, {
+  //     mentions: [contact]
+  // });
+    // console.log(chat.id)
+    // console.log(contact)
+
+//   for (let contact of mentions) {
+//     console.log(contact)
+//     console.log(`${contact.pushname} was mentioned`);
+//   }
+
+
+    // client.getChats().then((chats) => { //get all chat id's and send them to the client.on("message") callback. 	  console.log
+    //   console.log(chats); //get the chat id and send it to the client.on("message") callback. 	  client.sendMessage
+    // }); 	  //getChats() function is a method of the Client class. 	  client.getChats() //get all chat
