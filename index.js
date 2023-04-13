@@ -76,13 +76,16 @@ client.on("message", async (message) => {
     client.sendMessage(chatId, media, { caption: "this is my caption" });
   } else if (!message.hasMedia) {
     const chatId = message.from;
+    const mentions = await message.getMentions();
     const chat = await message.getChat();
     const contact = await message.getContact();
 
     if (chat.isGroup) {
+      message.reply("Received By 🤖");
       await chat.sendMessage(`Hello @${contact.id.user}`, {
         mentions: [contact],
       });
+      
     } else {
       message.reply("Received By 🤖");
       client.sendMessage(chatId, "processing please wait...");
